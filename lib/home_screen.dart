@@ -38,6 +38,22 @@ class _HomeScreenState extends State<HomeScreen> {
       'da3b142c6e3d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB'
       '8fHx8&auto=format&fit=crop&w=1170&q=80';
 
+  ScrollController? _controller;
+  double pixels = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = ScrollController();
+    _controller?.addListener(() {
+      setState(() {
+        pixels = _controller!.position.pixels;
+        print(_controller!.position.pixels);
+      });
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         height: MediaQuery.of(context).size.height,
         width: double.infinity,
         child: SingleChildScrollView(
+          controller: _controller,
           child: Column(
             children: [
               Stack(
@@ -251,11 +268,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            InfoPaletteScreen(
-                              title: 'Community',
-                              text:
-                                  'Communicate with colleagues, share ideas, fina a team in project in one space',
-                              icon: Icons.people_rounded,
+                            AnimatedOpacity(
+                              opacity: pixels >= 100 ? 1.0 : 0.0,
+                              duration: const Duration(milliseconds: 500),
+                              child: AnimatedPadding(
+                                duration: const Duration(milliseconds: 500),
+                                padding: EdgeInsets.only(left: pixels >= 100 ? 0.0 : 500.0),
+                                child: InfoPaletteScreen(
+                                  title: 'Community',
+                                  text:
+                                      'Communicate with colleagues, share ideas, fina a team in project in one space',
+                                  icon: Icons.people_rounded,
+                                ),
+                              ),
                             ),
                             InfoPaletteScreen(
                               title: 'Overview Reports',
@@ -316,9 +341,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.amber.shade400,
                               borderRadius: BorderRadius.circular(400.0)),
                         )),
-                    Positioned(
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 500),
                       top: 20.0,
-                      left: 100.0,
+                      left: pixels >= 500 ? 100.0 : 0.0,
                       child: Container(
                         height: 400.0,
                         width: 700.0,
@@ -344,55 +370,60 @@ class _HomeScreenState extends State<HomeScreen> {
                         factor: 1.0,
                         title: 'publish your project whenever you want',
                         subTitle: 'Shakeeb'),
-                    Positioned(
-                      right: 100.0,
+                    AnimatedPositioned(
+                      right: pixels >= 600 ? 100.0 : 0.0,
                       top: 150.0,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Easy Project Management",
-                            style: GoogleFonts.nunito(
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15.0,
-                          ),
-                          Container(
-                            width: 280.0,
-                            child: Text(
-                              "Manage your projects, Organize your"
-                              " own"
-                              " workspace, Keep statistics and collaborate "
-                              "with your teammates",
+                      duration: const Duration(milliseconds: 500),
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 500),
+                        opacity: pixels >= 600 ? 1.0 : 0.0,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Easy Project Management",
                               style: GoogleFonts.nunito(
-                                  fontSize: 14.0,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w400),
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 20.0),
-                          TextButton(
-                              onPressed: () {},
-                              style: TextButton.styleFrom(
-                                  backgroundColor: Colors.black87,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  )),
-                              child: Container(
-                                height: 45.0,
-                                width: 130.0,
-                                child: Center(
-                                  child: Text(
-                                    "Try for free",
-                                    style: GoogleFonts.nunito(
-                                        fontSize: 13.0, color: Colors.white),
+                            const SizedBox(
+                              height: 15.0,
+                            ),
+                            Container(
+                              width: 280.0,
+                              child: Text(
+                                "Manage your projects, Organize your"
+                                " own"
+                                " workspace, Keep statistics and collaborate "
+                                "with your teammates",
+                                style: GoogleFonts.nunito(
+                                    fontSize: 14.0,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                            const SizedBox(height: 20.0),
+                            TextButton(
+                                onPressed: () {},
+                                style: TextButton.styleFrom(
+                                    backgroundColor: Colors.black87,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                    )),
+                                child: Container(
+                                  height: 45.0,
+                                  width: 130.0,
+                                  child: Center(
+                                    child: Text(
+                                      "Try for free",
+                                      style: GoogleFonts.nunito(
+                                          fontSize: 13.0, color: Colors.white),
+                                    ),
                                   ),
-                                ),
-                              ))
-                        ],
+                                ))
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -420,81 +451,86 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    Align(
-                      alignment: Alignment(0.0, 0.0),
-                      child: Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Positioned(
-                                  left: -70.0,
-                                  top: -60.0,
-                                  child: Icon(
-                                    Icons.format_quote,
-                                    size: 150.0,
-                                    color: Colors.grey.shade300,
+                    AnimatedAlign(
+                      duration: const Duration(milliseconds: 500),
+                      alignment: pixels >= 1200 ? const Alignment(0.0, 1.0) : const Alignment(-0.2, 0.0),
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 500),
+                        opacity: pixels >= 1200 ? 1.0 : 0.0,
+                        child: Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Positioned(
+                                    left: -70.0,
+                                    top: -60.0,
+                                    child: Icon(
+                                      Icons.format_quote,
+                                      size: 150.0,
+                                      color: Colors.grey.shade300,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Excellent",
+                                    style: GoogleFonts.nunito(
+                                        fontSize: 30.0,
+                                        fontWeight: FontWeight.w800),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20.0,
+                              ),
+                              Container(
+                                width: 360.0,
+                                child: Text(
+                                  "To the Freelancer, I found a team for project during one i met a new specialist",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.nunito(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14.0,
                                   ),
                                 ),
-                                Text(
-                                  "Excellent",
-                                  style: GoogleFonts.nunito(
-                                      fontSize: 30.0,
-                                      fontWeight: FontWeight.w800),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
-                            Container(
-                              width: 360.0,
-                              child: Text(
-                                "To the Freelancer, I found a team for project during one i met a new specialist",
-                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(
+                                height: 10.0,
+                              ),
+                              Text(
+                                "Comment details",
                                 style: GoogleFonts.nunito(
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w800,
                                   fontSize: 14.0,
                                 ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 10.0,
-                            ),
-                            Text(
-                              "Comment details",
-                              style: GoogleFonts.nunito(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                            Container(
-                              height: 1.5,
-                              width: 100.0,
-                              color: Colors.black87,
-                            )
-                          ],
+                              Container(
+                                height: 1.5,
+                                width: 100.0,
+                                color: Colors.black87,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
                     TestmonialTile(
                       image: image,
                       left: 780.0,
-                      top: 100.0,
+                      top: pixels >= 1000 ? 100.0 : 130.0,
                       leftAlign: false,
                     ),
                     TestmonialTile(
                       image: image1,
                       left: 840.0,
-                      top: 400.0,
+                      top: pixels >= 1200 ? 400.0 : 430.0,
                       leftAlign: false,
                     ),
                     TestmonialTile(
                       image: image2,
                       left: 440.0,
-                      top: 400.0,
+                      top: pixels >= 1300 ? 450.0 : 480.0,
                       leftAlign: false,
                     ),
                     Positioned(
@@ -561,90 +597,95 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    Align(
-                      alignment: Alignment(0.0, 1.0),
-                      child: Container(
-                        height: 600.0,
-                        width: 400.0,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 80.0,
-                            ),
-                            Text(
-                              "Get Started Today",
-                              style: GoogleFonts.josefinSans(
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 1.0,
-                                  fontSize: 35.0,
-                                  color: Colors.white),
-                            ),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
-                            Text(
-                              "Freelancer - Community of people who values their time",
-                              style: GoogleFonts.nunito(
-                                  color: Colors.white,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(
-                              height: 30.0,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(
-                                              30.0),
-                                        )),
-                                    child: Container(
-                                      height: 45.0,
-                                      width: 100.0,
-                                      child: Center(
-                                        child: Text(
-                                          "Get my price",
-                                          style: GoogleFonts.nunito(
-                                              fontSize: 13.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: const Color(0xff373e98)),
+                    AnimatedAlign(
+                      duration: const Duration(milliseconds: 500),
+                      alignment: pixels >= 1600 ? const Alignment(0.0, 1.0) : const Alignment(-0.2, 0.0),
+                      child: AnimatedOpacity(
+                        opacity: pixels >= 1600 ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 500),
+                        child: Container(
+                          height: 600.0,
+                          width: 400.0,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 80.0,
+                              ),
+                              Text(
+                                "Get Started Today",
+                                style: GoogleFonts.josefinSans(
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: 1.0,
+                                    fontSize: 35.0,
+                                    color: Colors.white),
+                              ),
+                              const SizedBox(
+                                height: 20.0,
+                              ),
+                              Text(
+                                "Freelancer - Community of people who values their time",
+                                style: GoogleFonts.nunito(
+                                    color: Colors.white,
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(
+                                height: 30.0,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                      onPressed: () {},
+                                      style: TextButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                30.0),
+                                          )),
+                                      child: Container(
+                                        height: 45.0,
+                                        width: 100.0,
+                                        child: Center(
+                                          child: Text(
+                                            "Get my price",
+                                            style: GoogleFonts.nunito(
+                                                fontSize: 13.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xff373e98)),
+                                          ),
                                         ),
-                                      ),
-                                    )),
-                                const SizedBox(width: 20.0,),
-                                TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                        backgroundColor: Colors.transparent,
-                                        shape: RoundedRectangleBorder(
-                                          side: BorderSide(color: Colors.white),
-                                          borderRadius:
-                                          BorderRadius.circular(
-                                              30.0),
-                                        )),
-                                    child: Container(
-                                      height: 45.0,
-                                      width: 100.0,
-                                      child: Center(
-                                        child: Text(
-                                          "Try for free",
-                                          style: GoogleFonts.nunito(
-                                              fontSize: 13.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white),
+                                      )),
+                                  const SizedBox(width: 20.0,),
+                                  TextButton(
+                                      onPressed: () {},
+                                      style: TextButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(color: Colors.white),
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                30.0),
+                                          )),
+                                      child: Container(
+                                        height: 45.0,
+                                        width: 100.0,
+                                        child: Center(
+                                          child: Text(
+                                            "Try for free",
+                                            style: GoogleFonts.nunito(
+                                                fontSize: 13.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
                                         ),
-                                      ),
-                                    )),
-                              ],
-                            )
-                          ],
+                                      )),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
